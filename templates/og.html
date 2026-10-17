@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<style>
+  @font-face {
+    font-family: 'Heebo';
+    src: url('$font') format('woff2');
+    font-weight: 100 900;
+  }
+
+  html, body { margin: 0; }
+
+  body {
+    position: relative;
+    width: 1200px;
+    height: 630px;
+    overflow: hidden;
+    background: #0d0e12;
+    color: #eeedf3;
+    font-family: 'Heebo', Arial, sans-serif;
+  }
+
+  body::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(40% 60% at 90% 10%, rgb(224 83 61 / .26), transparent 70%),
+      radial-gradient(45% 65% at 10% 20%, rgb(91 108 255 / .30), transparent 70%),
+      radial-gradient(40% 55% at 45% 110%, rgb(184 137 43 / .22), transparent 70%);
+  }
+
+  body::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(#262932 1.6px, transparent 1.6px);
+    background-size: 26px 26px;
+    -webkit-mask-image: linear-gradient(to bottom, #000 30%, transparent);
+  }
+
+  .text {
+    position: absolute;
+    z-index: 1;
+    top: 0;
+    bottom: 0;
+    right: 80px;
+    width: 600px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .eyebrow {
+    align-self: flex-start;
+    margin: 0 0 22px;
+    padding: 6px 20px;
+    border: 1.5px solid rgb(149 164 255 / .45);
+    border-radius: 999px;
+    background: rgb(149 164 255 / .12);
+    color: #95a4ff;
+    font-size: 24px;
+    font-weight: 600;
+  }
+
+  h1 {
+    margin: 0 0 22px;
+    font-size: 72px;
+    white-space: nowrap;
+    font-weight: 900;
+    line-height: 1.02;
+    letter-spacing: -0.02em;
+  }
+
+  .lead {
+    margin: 0;
+    color: #b6b4c0;
+    font-size: 30px;
+    line-height: 1.45;
+  }
+
+  .collage {
+    position: absolute;
+    z-index: 1;
+    top: 50%;
+    left: 40px;
+    width: 470px;
+    height: 470px;
+    transform: translateY(-50%);
+  }
+
+  .shot {
+    position: absolute;
+    width: 330px;
+    height: 206px;
+    margin: 0;
+    overflow: hidden;
+    border: 1.5px solid rgb(255 255 255 / .14);
+    border-radius: 22px;
+    background: var(--accent);
+    box-shadow: 0 30px 60px -20px rgb(0 0 0 / .8), 0 8px 18px rgb(0 0 0 / .35);
+  }
+
+  .shot img { display: block; width: 100%; height: 100%; object-fit: cover; }
+  .shot.contain img { object-fit: contain; padding: 10px; box-sizing: border-box; }
+
+  .shot figcaption {
+    position: absolute;
+    bottom: 12px;
+    right: 12px;
+    padding: 4px 14px;
+    border-radius: 999px;
+    background: rgb(13 14 18 / .78);
+    color: #fff;
+    font-size: 20px;
+    font-weight: 700;
+  }
+
+  .shot-1 { top: 10px; left: 100px; transform: rotate(4deg); }
+  .shot-2 { top: 135px; left: 0; transform: rotate(-5deg); }
+  .shot-3 { top: 255px; left: 95px; transform: rotate(3deg); }
+
+  /* The third card covers the bottom of the second, so its label goes on top. */
+  .shot-2 figcaption { top: 12px; bottom: auto; right: auto; left: 12px; }
+</style>
+</head>
+<body>
+  <div class="text">
+    <p class="eyebrow">$eyebrow</p>
+    <h1>$title</h1>
+    <p class="lead">$lead</p>
+  </div>
+  <div class="collage">$cards</div>
+</body>
+</html>

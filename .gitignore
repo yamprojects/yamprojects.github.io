@@ -1,0 +1,4 @@
+# Projects that are not on the site yet stay off the public repository too.
+drafts/
+
+__pycache__/
