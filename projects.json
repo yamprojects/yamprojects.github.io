@@ -4,14 +4,25 @@
     "eyebrow": "תיק עבודות",
     "title": "הפרויקטים של ים",
     "lead": "אפליקציה לאנדרואיד, תוכנה לווינדוס ותרגומי משחקים לעברית. לכל פרויקט יש אתר משלו.",
-    "site_url": "https://yamprojects.github.io/"
+    "site_url": "https://yamprojects.github.io/",
+    "donate": { "url": "", "label": "תמיכה בפרויקטים", "en": { "label": "Support my projects" } },
+    "ads": { "client": "", "slots": { "between": "", "footer": "" } },
+    "en": {
+      "eyebrow": "Portfolio",
+      "title": "Yam's Projects",
+      "lead": "An Android app, a Windows app and Hebrew game translations. Each project has a website of its own."
+    }
   },
 
   "categories": [
-    { "id": "games", "label": "משחקים", "blurb": "משחקי יריות, טיפוס ו-RPG, רובם רצים ישר בדפדפן." },
-    { "id": "apps", "label": "אפליקציות", "blurb": "להורדה מהאתר של כל אחת." },
-    { "id": "tools", "label": "כלים ובוטים", "blurb": "כלים שקוראים זיכרון, מאזינים לאודיו ובודקים חומרה." },
-    { "id": "translations", "label": "תרגומים", "blurb": "תרגומי מעריצים לעברית למשחקי מחשב." }
+    { "id": "games", "label": "משחקים", "blurb": "משחקי יריות, טיפוס ו-RPG, רובם רצים ישר בדפדפן.",
+      "en": { "label": "Games", "blurb": "Shooters, climbers and RPGs, most of them running right in the browser." } },
+    { "id": "apps", "label": "אפליקציות", "blurb": "כל אחת להורדה מהאתר שלה.",
+      "en": { "label": "Apps", "blurb": "Each one can be downloaded from its own website." } },
+    { "id": "tools", "label": "כלים ובוטים", "blurb": "כלים שקוראים זיכרון, מאזינים לאודיו ובודקים חומרה.",
+      "en": { "label": "Tools & bots", "blurb": "Tools that read memory, listen to audio and test hardware." } },
+    { "id": "translations", "label": "תרגומים", "blurb": "תרגומי מעריצים לעברית למשחקי מחשב.",
+      "en": { "label": "Translations", "blurb": "Hebrew fan translations for PC games." } }
   ],
 
   "statuses": {
@@ -24,31 +35,68 @@
     "experimental": "ניסיוני"
   },
 
+  "statuses_en": {
+    "released": "Released",
+    "soon": "Coming soon",
+    "dev": "In development",
+    "alpha": "Pre-alpha",
+    "working": "Working",
+    "testing": "Testing",
+    "experimental": "Experimental"
+  },
+
   "projects": [
     {
       "slug": "hinachti",
       "name": "הנחתי",
+      "kicker": "אפליקציה לאנדרואיד",
       "category": "apps",
       "status": "released",
       "version": "1.8.5",
-      "summary": "אפליקציית אנדרואיד שעוזרת להקפיד על הנחת תפילין כל בוקר: הטלפון נפתח ברגע שמדווחים שהנחת.",
+      "summary": "אפליקציית אנדרואיד שעוזרת להקפיד על הנחת תפילין כל בוקר: הטלפון נפתח ברגע שמדווחים שהתפילין הונחו.",
       "highlights": [
-        "זמני היום לפי 54 ערים או לפי מיקום, מחושבים במכשיר עצמו",
-        "יודעת מתי לא מניחים: שבתות, חגים, חול המועד לפי המנהג ותשעה באב",
+        "זמני היום ל-54 ערים או לפי המיקום, מחושבים במכשיר עצמו",
+        "יודעת מתי לא מניחים: שבתות, חגים, חול המועד לפי המנהג, ובתשעה באב מניחים רק במנחה",
         "סדר הנחת תפילין בנוסח אשכנז וספרד, פרשת השבוע ותהילים",
         "עובדת בלי אינטרנט, ושום דבר לא נשלח לשום מקום"
       ],
       "tech": ["Android", "Kotlin", "Gradle"],
       "image": "hinachti.jpg",
-      "alt": "תמונת קידום של הנחתי: טלפון עם מסך הבוקר והכיתוב «הנחת? לחיצה אחת, והיום מסומן»",
+      "alt": "תמונת קידום של הנחתי: טלפון עם מסך הסיום, והכיתוב «הנחת? לחיצה אחת, והיום מסומן.»",
+      "icon": "hinachti-icon.png",
+      "device": {
+        "type": "phone",
+        "screens": ["hinachti-morning.webp", "hinachti-calendar.webp", "hinachti-done.webp"],
+        "alt": "מסך הבוקר של הנחתי: «בוקר טוב. זמן להניח תפילין.», זמני היום והכפתור «הנחתי»"
+      },
       "accent": "#b8892b",
       "links": [
         { "label": "לאתר האפליקציה", "url": "https://hinachti.github.io/" }
-      ]
+      ],
+      "en": {
+        "name": "Hinachti",
+        "subtitle": "הנחתי",
+        "kicker": "Android app",
+        "summary": "An Android app that helps you keep up with laying tefillin every morning: the phone unlocks as soon as you confirm that you've laid them.",
+        "highlights": [
+          "Halachic times of day for 54 cities or by location, calculated on the device itself",
+          "Knows when tefillin aren't laid: Shabbat, festivals and Chol HaMoed by your custom, and on Tisha B'Av they're laid only at Mincha",
+          "The order of laying tefillin in Nusach Ashkenaz and Nusach Sefard, the weekly Torah portion and Psalms",
+          "Works offline, and nothing is sent anywhere"
+        ],
+        "alt": "Hinachti promo image: a phone showing the completion screen, with the Hebrew caption “Laid tefillin? One tap, and the day is marked.”",
+        "device": {
+          "alt": "Hinachti's morning screen in Hebrew: the greeting “Good morning. Time to lay tefillin.”, the times of day and the “Hinachti” (“I've laid them”) button"
+        },
+        "links": [
+          { "label": "App website (Hebrew)", "url": "https://hinachti.github.io/", "hreflang": "he" }
+        ]
+      }
     },
     {
       "slug": "steam-switcher",
       "name": "Steam Switcher",
+      "kicker": "תוכנה לווינדוס",
       "category": "apps",
       "status": "released",
       "version": "1.0.7",
@@ -56,37 +104,144 @@
       "highlights": [
         "לא שומרת ולא מבקשת סיסמאות",
         "מצב סטרימר שמסתיר את שמות המשתמש כש-OBS או Streamlabs פתוחים",
-        "מקש קיצור גלובלי, תפריט במגש המערכת, ותצוגת רשימה או רשת",
+        "מקש קיצור גלובלי, תפריט במגש המערכת ותצוגת רשימה או רשת",
         "בלי דפדפן מוטמע ובלי שירותי רקע: נפתחת מיד"
       ],
       "tech": ["C#", ".NET 10", "WPF"],
       "image": "steam-switcher.png",
       "crop": "top",
       "alt": "צילום מסך של Steam Switcher בעברית: רשת של חשבונות עם אווטארים",
+      "icon": "steam-switcher-icon.svg",
+      "device": {
+        "type": "window",
+        "screens": ["steam-switcher.png", "steam-switcher-list.png"],
+        "alt": "Steam Switcher בעברית: רשת של חשבונות Steam עם אווטארים, ומאחוריה תצוגת הרשימה"
+      },
       "accent": "#1f4fd1",
       "links": [
         { "label": "לאתר ולהורדה", "url": "https://steam-switcher.gitlab.io/he/" }
-      ]
+      ],
+      "en": {
+        "kicker": "Windows app",
+        "summary": "A small, fast Windows app that switches between Steam accounts with a double-click, without typing passwords again.",
+        "highlights": [
+          "Never stores or asks for passwords",
+          "Streamer mode hides usernames while OBS or Streamlabs is open",
+          "A global hotkey, a tray menu and a list or grid view",
+          "No embedded browser and no background services: it opens instantly"
+        ],
+        "image": "steam-switcher-en.png",
+        "alt": "Steam Switcher screenshot: a grid of Steam accounts with avatars",
+        "device": {
+          "screens": ["steam-switcher-en.png", "steam-switcher-list-en.png"],
+          "alt": "Steam Switcher: a grid of Steam accounts with avatars, and the list view behind it"
+        },
+        "links": [
+          { "label": "Website & download", "url": "https://steam-switcher.gitlab.io/" }
+        ]
+      }
     },
 
     {
       "slug": "hebrew-game-translations",
       "name": "תרגומי משחקים לעברית",
+      "kicker": "תרגומים לעברית",
       "category": "translations",
       "status": "released",
-      "summary": "תרגומי מעריצים לעברית למשחקי מחשב, עם גופן עברי וכתיבה מימין לשמאל בתוך המשחק עצמו. הראשון: NARUTO: Ultimate Ninja STORM, כולו בעברית.",
+      "summary": "תרגומי מעריצים לעברית למשחקי מחשב, עם גופן עברי וכתיבה מימין לשמאל בתוך המשחק עצמו. הראשון הוא NARUTO: Ultimate Ninja STORM, כולו בעברית.",
       "highlights": [
-        "נארוטו: כל הדיאלוגים, התפריטים, טבלת המהלכים והטקסט שבתוך התמונות - 7,330 שורות",
+        "נארוטו: כל הדיאלוגים, התפריטים, טבלת המהלכים והטקסט שבתוך התמונות – 7,330 שורות",
         "גופן עברי שמתאים לסגנון של המשחק",
         "כלים משלי לפתיחה ולבנייה מחדש של קבצי המשחק, ומתקין שבונה את העברית מהעותק של השחקן בלי להפיץ קבצי משחק"
       ],
-      "tech": ["Python", "Reverse engineering"],
-      "art": "letters",
+      "tech": ["Python", "הנדסה לאחור"],
+      "image": "naruto-hero.jpg",
+      "alt": "נארוטו מחזיק ראסנגן במשחק NARUTO: Ultimate Ninja STORM",
+      "flag": "il",
+      "glyph": "א",
       "accent": "#f07a1a",
       "accent2": "#ffb547",
       "links": [
         { "label": "לאתר התרגומים", "url": "https://matorgam.pages.dev/" }
-      ]
+      ],
+      "en": {
+        "name": "Hebrew game translations",
+        "kicker": "Hebrew translations",
+        "summary": "Hebrew fan translations for PC games, with a Hebrew font and right-to-left text inside the game itself. The first is NARUTO: Ultimate Ninja STORM, fully in Hebrew.",
+        "highlights": [
+          "Naruto: all the dialogue, the menus, the move list and the text inside images – 7,330 lines",
+          "A Hebrew font that matches the game's style",
+          "My own tools for unpacking and rebuilding the game's files, and an installer that builds the Hebrew from the player's own copy without distributing game files"
+        ],
+        "tech": ["Python", "Reverse engineering"],
+        "alt": "Naruto holding a Rasengan in NARUTO: Ultimate Ninja STORM",
+        "links": [
+          { "label": "Translations site (Hebrew)", "url": "https://matorgam.pages.dev/", "hreflang": "he" }
+        ]
+      }
     }
-  ]
+  ],
+
+  "ui": {
+    "he": {
+      "skip": "דילוג לפרויקטים",
+      "nav": "ניווט ראשי",
+      "home": "לראש העמוד",
+      "categories_nav": "קטגוריות",
+      "lang_switch": "English",
+      "lang_short": "EN",
+      "motion": "עצירת תנועה",
+      "og_alt": "הפרויקטים של ים: הנחתי, Steam Switcher ותרגומי משחקים לעברית",
+      "cta": "לפרויקטים",
+      "stat_projects": "פרויקטים",
+      "stat_released": "שוחררו לציבור",
+      "stat_soon": "בקרוב",
+      "index": "בעמוד הזה",
+      "status": "סטטוס:",
+      "version": "גרסה",
+      "highlights": "בקצרה",
+      "more": "עוד פרטים",
+      "tech": "טכנולוגיות",
+      "footer": "נבנה ב-HTML ו-CSS עם מעט JavaScript, בלי עוגיות ובלי מעקב.",
+      "updated": "עודכן ב-",
+      "back_to_top": "חזרה למעלה",
+      "flag_il": "תרגום ישראלי",
+      "ad": "פרסומת",
+      "footer_ads": "נבנה ב-HTML ו-CSS עם מעט JavaScript. האתר מציג פרסומות של Google.",
+      "ads_privacy": "איך Google משתמשת במידע בפרסומות",
+      "404_title": "הדף לא נמצא",
+      "404_body": "אולי הקישור ישן, או שהדף עבר למקום אחר.",
+      "404_home": "לכל הפרויקטים"
+    },
+    "en": {
+      "skip": "Skip to projects",
+      "nav": "Main navigation",
+      "home": "Back to the top of the page",
+      "categories_nav": "Categories",
+      "lang_switch": "עברית",
+      "lang_short": "עב",
+      "motion": "Pause motion",
+      "og_alt": "Yam's Projects: Hinachti, Steam Switcher and Hebrew game translations",
+      "cta": "See the projects",
+      "stat_projects": "Projects",
+      "stat_released": "Released",
+      "stat_soon": "Coming soon",
+      "index": "On this page",
+      "status": "Status:",
+      "version": "Version",
+      "highlights": "In short",
+      "more": "More details",
+      "tech": "Technologies",
+      "footer": "Built with HTML, CSS and a little JavaScript. No cookies, no tracking.",
+      "updated": "Updated ",
+      "back_to_top": "Back to top",
+      "flag_il": "Israeli translation",
+      "ad": "Advertisement",
+      "footer_ads": "Built with HTML, CSS and a little JavaScript. This site shows Google ads.",
+      "ads_privacy": "How Google uses data in ads",
+      "404_title": "Page not found",
+      "404_body": "The link may be old, or the page has moved.",
+      "404_home": "All projects"
+    }
+  }
 }

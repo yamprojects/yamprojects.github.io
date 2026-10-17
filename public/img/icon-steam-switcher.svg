@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Steam Switcher">
+  <defs>
+    <linearGradient id="tile" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#1e293b"/>
+      <stop offset="1" stop-color="#0c1018"/>
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="14" fill="url(#tile)"/>
+  <g fill="none" stroke="#5ba8ff" stroke-width="5.4" stroke-linecap="round">
+    <path d="M14.60 23.89 A19.2 19.2 0 0 1 49.40 23.89"/>
+    <path d="M49.40 40.11 A19.2 19.2 0 0 1 14.60 40.11"/>
+  </g>
+  <g fill="#5ba8ff">
+    <polygon points="54.00,33.77 55.74,20.93 43.06,26.85"/>
+    <polygon points="10.00,30.23 8.26,43.07 20.94,37.15"/>
+  </g>
+</svg>

@@ -3,20 +3,34 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>הדף לא נמצא · $title</title>
+  <title>$he_title · $title | $en_title · $title_en</title>
   <meta name="robots" content="noindex">
-  <meta name="color-scheme" content="light dark">
+  <meta name="color-scheme" content="dark light">
+  <meta name="theme-color" content="#f3f1fa" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#07070e" media="(prefers-color-scheme: dark)">
   <!-- Root-absolute paths: GitHub Pages serves this page at whatever missing URL was asked for. -->
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="/site.css">
 </head>
-<body>
-  <main class="hero notfound">
+<body class="static" style="$aurora">
+  $video
+  <div class="aurora" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+  <main class="notfound">
+    <div class="curtains" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
     <div class="wrap">
-      <p class="notfound-code" aria-hidden="true">404</p>
-      <h1>הדף לא נמצא</h1>
-      <p class="lead">אולי הקישור ישן, או שהדף עבר למקום אחר.</p>
-      <a class="btn" href="/">לכל הפרויקטים <span aria-hidden="true">←</span></a>
+      <div class="notfound-panel">
+        <p class="notfound-code" dir="ltr" aria-hidden="true">404</p>
+        <div class="notfound-lang">
+          <h1>$he_title</h1>
+          <p class="lead">$he_body</p>
+          <a class="btn btn--glow" href="/" hreflang="he">$he_home $fwd</a>
+        </div>
+        <div class="notfound-lang" lang="en" dir="ltr">
+          <h2>$en_title</h2>
+          <p class="lead">$en_body</p>
+          <a class="btn btn--ghost" href="/en/" hreflang="en">$en_home $fwd</a>
+        </div>
+      </div>
     </div>
   </main>
 </body>
