@@ -5,7 +5,7 @@
     "title": "הפרויקטים של ים",
     "lead": "אפליקציה לאנדרואיד, תוכנה לווינדוס ותרגומי משחקים לעברית. לכל פרויקט יש אתר משלו.",
     "site_url": "https://yamprojects.github.io/",
-    "donate": { "url": "", "label": "תמיכה בפרויקטים", "en": { "label": "Support my projects" } },
+    "donate": { "url": "https://ko-fi.com/yamt2000", "label": "תמיכה בפרויקטים", "en": { "label": "Support my projects" } },
     "ads": { "client": "", "slots": { "between": "", "footer": "" } },
     "en": {
       "eyebrow": "My work",
@@ -52,7 +52,8 @@
       "kicker": "אפליקציה לאנדרואיד",
       "category": "apps",
       "status": "released",
-      "version": "1.8.5",
+      "version": "1.8.6",
+      "version_source": { "url": "https://hinachti.github.io/latest.json", "key": "versionName" },
       "summary": "אפליקציית אנדרואיד שעוזרת להקפיד על הנחת תפילין כל בוקר: הטלפון נפתח ברגע שמדווחים שהתפילין הונחו.",
       "highlights": [
         "זמני היום ל-54 ערים או לפי המיקום, מחושבים במכשיר עצמו",
@@ -100,6 +101,7 @@
       "category": "apps",
       "status": "released",
       "version": "1.0.7",
+      "version_source": { "url": "https://steam-switcher.gitlab.io/latest.json", "key": "version" },
       "summary": "תוכנה קטנה ומהירה לווינדוס שמחליפה בין חשבונות Steam בלחיצה כפולה, בלי להקליד סיסמאות שוב.",
       "highlights": [
         "לא שומרת ולא מבקשת סיסמאות",
@@ -190,7 +192,6 @@
       "categories_nav": "קטגוריות",
       "lang_switch": "English",
       "lang_short": "EN",
-      "motion": "עצירת תנועה",
       "og_alt": "הפרויקטים של ים: הנחתי, Steam Switcher ותרגומי משחקים לעברית",
       "cta": "לפרויקטים",
       "stat_projects": "פרויקטים",
@@ -220,7 +221,6 @@
       "categories_nav": "Categories",
       "lang_switch": "עברית",
       "lang_short": "עב",
-      "motion": "Pause motion",
       "og_alt": "Yam's Projects: Hinachti, Steam Switcher and Hebrew game translations",
       "cta": "See the projects",
       "stat_projects": "Projects",

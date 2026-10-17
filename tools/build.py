@@ -23,6 +23,8 @@ import random
 import re
 import shutil
 import string
+import sys
+import urllib.request
 from pathlib import Path
 
 from PIL import Image
@@ -109,6 +111,9 @@ def other_dir(text, lang):
     if lang == "en" and re.search(r"[א-ת]", text):
         return ' lang="he" dir="rtl"'
     return ""
+
+
+GLARE = '<i class="glare" aria-hidden="true"></i>'
 
 
 def chip_dir(text, lang):
@@ -483,6 +488,115 @@ def render_art(project):
     return svg
 
 
+# ---------------------------------------------------------------- space (the hero's sky)
+
+STAR_TILE = 512          # CSS px; the files are drawn at twice that for sharp screens
+STAR_COLORS = ((255, 255, 255), (196, 214, 255), (255, 228, 196), (226, 218, 255))
+
+
+def render_star_tiles():
+    """Two repeating star tiles (far and mid depth) per theme, drawn once at build time.
+
+    They show with or without JavaScript; site.js only adds parallax, and CSS a slow drift."""
+    from PIL import ImageDraw, ImageFilter
+    scale = 4                    # draw at 4x, keep 2x: soft, round stars
+    size = STAR_TILE * scale
+    layers = {
+        # name: (count, radius range in CSS px, alpha range, glow)
+        ("far", "dark"): (190, (.35, .75), (90, 210), False),
+        ("mid", "dark"): (64, (.7, 1.25), (150, 255), True),
+        ("far", "light"): (70, (.4, .7), (50, 110), False),
+        ("mid", "light"): (26, (.6, 1.0), (80, 150), True),
+    }
+    for (depth, theme), (count, radius, alpha, glow) in layers.items():
+        rng = random.Random(f"stars-{depth}-{theme}")
+        im = Image.new("RGBA", (size, size), (0, 0, 0, 0))
+        halo = Image.new("RGBA", (size, size), (0, 0, 0, 0))
+        draw, hdraw = ImageDraw.Draw(im), ImageDraw.Draw(halo)
+        for _ in range(count):
+            x, y = rng.uniform(0, size), rng.uniform(0, size)
+            r = rng.uniform(*radius) * scale
+            a = rng.randint(*alpha)
+            color = (104, 84, 200) if theme == "light" else rng.choices(STAR_COLORS, (6, 3, 2, 2))[0]
+            for dx in (-size, 0, size):          # wrap around the edges so the tile repeats
+                for dy in (-size, 0, size):
+                    cx, cy = x + dx, y + dy
+                    if -8 * r < cx < size + 8 * r and -8 * r < cy < size + 8 * r:
+                        draw.ellipse((cx - r, cy - r, cx + r, cy + r), fill=color + (a,))
+                        if glow:
+                            g = r * 4
+                            hdraw.ellipse((cx - g, cy - g, cx + g, cy + g), fill=color + (a // 4,))
+        if glow:
+            halo = halo.filter(ImageFilter.GaussianBlur(3 * scale))
+            im = Image.alpha_composite(halo, im)
+        im = im.resize((STAR_TILE * 2, STAR_TILE * 2), Image.LANCZOS)
+        im.save(PUBLIC / "img" / f"stars-{depth}-{theme}.webp", "WEBP", quality=88, method=6)
+
+
+def near_stars(count=24, groups=3):
+    """The few bright stars, with seeded positions, in three groups that twinkle out of step
+    (three animations for all of them, not one per star)."""
+    rng = random.Random("near-stars")
+    out = []
+    for g in range(groups):
+        stars = []
+        for _ in range(count // groups):
+            tone = rng.choices(("w", "b", "y"), (5, 3, 2))[0]
+            stars.append(
+                f'<i class="t{tone}" style="left: {rng.uniform(2, 98):.1f}%; top: {rng.uniform(2, 82):.1f}%; '
+                f'--s: {rng.uniform(1.6, 3.2):.1f}px"></i>')
+        out.append(f'<span class="tw tw{g + 1}">{"".join(stars)}</span>')
+    return "".join(out)
+
+
+# ---------------------------------------------------------------- versions from the projects' sites
+
+VERSION_RE = re.compile(r"\d+(?:\.\d+){1,3}")
+
+
+def sync_versions(path, data):
+    """Reads each project's version_source (the project's own latest.json). A newer valid value
+    is used for this build and written back into projects.json in place. Never fails the build."""
+    text = path.read_text(encoding="utf-8")
+    changed = False
+    for p in data["projects"]:
+        src = p.get("version_source")
+        if not src or "version" not in p:
+            continue
+        try:
+            req = urllib.request.Request(src["url"], headers={"User-Agent": "portfolio-build"})
+            with urllib.request.urlopen(req, timeout=5) as response:
+                value = str(json.loads(response.read().decode("utf-8")).get(src["key"], "")).strip()
+        except Exception as error:  # offline, timeout, bad JSON: keep what we have
+            print(f"warning: {p['slug']}: could not read {src['url']} ({type(error).__name__}); "
+                  f"keeping {p['version']}")
+            continue
+        if not VERSION_RE.fullmatch(value):
+            print(f"warning: {p['slug']}: {src['url']} gave {value!r}, not a version; keeping {p['version']}")
+            continue
+        if value == p["version"]:
+            continue
+        start = text.index(f'"slug": "{p["slug"]}"')
+        m = re.compile(r'("version":\s*")([^"]*)(")').search(text, start)
+        nxt = text.find('"slug":', start + 1)
+        if not m or (nxt != -1 and m.start() > nxt):
+            print(f"warning: {p['slug']}: no version line to update in projects.json")
+            continue
+        text = text[:m.start(2)] + value + text[m.end(2):]
+        print(f"{p['slug']}: {p['version']} \u2192 {value}")
+        p["version"] = value
+        changed = True
+    if changed:
+        path.write_text(text, encoding="utf-8")
+
+
+def version_attrs(p):
+    src = p.get("version_source")
+    if not src:
+        return ""
+    return f' data-version-url="{esc(src["url"])}" data-version-key="{esc(src["key"])}"'
+
+
 def render_favicon():
     svg = ('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">'
            '<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1">'
@@ -564,7 +678,7 @@ def render_device(p, root, count):
         slot = SLOTS[i]
         alt = (device.get("alt") or p.get("alt") or p["name"]) if i == 0 else ""
         img = screen_img(file, kind, "front" if i == 0 else "back", root, alt)
-        parts.append(f'<div class="{kind} {kind}--{slot}">{img}</div>')
+        parts.append(f'<div class="{kind} {kind}--{slot}">{img}{GLARE}</div>')
     return "".join(reversed(parts))
 
 
@@ -614,12 +728,12 @@ def render_showcase(projects, statuses, ui, root, lang):
         loading = 'loading="eager" fetchpriority="high"' if kind == "phone" else 'loading="lazy"'
         img = screen_img(p["device"]["screens"][0], kind, "hero", root, "", loading)
         items.append(f'<div class="sc sc-{kind}" style="--card-accent: {esc(p["accent"])}">'
-                     f'<div class="{kind} {kind}--front">{img}</div></div>')
+                     f'<div class="{kind} {kind}--front">{img}{GLARE}</div></div>')
     tags = []
     for slot, p in (("window", window), ("phone", phone), ("extra", extra)):
         if not p:
             continue
-        version = f' <span dir="ltr">v{esc(p["version"])}</span>' if p.get("version") else ""
+        version = f' <span dir="ltr"{version_attrs(p)}>v{esc(p["version"])}</span>' if p.get("version") else ""
         if p.get("image") and not p.get("device") and not p.get("icon"):
             name = render_thumb(p["image"], p.get("crop"))
             thumb = (f'<span class="sc-thumb"><img src="{root}img/{name}" '
@@ -658,7 +772,8 @@ def render_stage(p, root, feature, ui):
 def render_card(p, statuses, ui, root, lang, feature, flip):
     stage, kind = render_stage(p, root, feature, ui)
 
-    version = f'<span class="version" dir="ltr">v{esc(p["version"])}</span>' if p.get("version") else ""
+    version = (f'<span class="version" dir="ltr"{version_attrs(p)}>v{esc(p["version"])}</span>'
+               if p.get("version") else "")
     subtitle = (f'<span class="sub"{other_dir(p["subtitle"], lang)}>{esc(p["subtitle"])}</span>'
                 if p.get("subtitle") else "")
     kicker = f'<p class="kicker">{esc(p["kicker"])}</p>' if p.get("kicker") else ""
@@ -689,6 +804,7 @@ def render_card(p, statuses, ui, root, lang, feature, flip):
     name_dir = other_dir(p["name"], lang)
     return f"""
         <article class="{classes}" id="{esc(p['slug'])}" aria-labelledby="t-{esc(p['slug'])}" style="{accent_vars(p)}">
+          <span class="beam" aria-hidden="true"><i></i></span><span class="beam beam--halo" aria-hidden="true"><i></i></span>
           {stage}
           <div class="card-body">
             <div class="card-top">{render_icon(p, root)}<div class="meta">{status_badge(p, statuses, ui)}{version}</div></div>
@@ -759,7 +875,7 @@ def render_page(data, lang, base, today):
         sections.append(f"""
     <section class="category" id="{c['id']}" aria-labelledby="h-{c['id']}">
       <div class="category-head">
-        <span class="category-num" dir="ltr" aria-hidden="true">{number:02d}</span>
+        <span class="category-num" dir="ltr" data-num="{number:02d}" aria-hidden="true">{number:02d}<span class="num-shine"><span>{number:02d}</span></span></span>
         <div class="category-title">
           <h2 id="h-{c['id']}">{esc(c['label'])}</h2>
           <p>{prose(c['blurb'], lang)}</p>
@@ -842,13 +958,13 @@ def render_page(data, lang, base, today):
         switch_dir=LANGS[other]["dir"],
         switch_label=esc(ui["lang_switch"]),
         switch_short=esc(ui.get("lang_short", ui["lang_switch"])),
-        motion_label=esc(ui["motion"]),
         skip=esc(ui["skip"]),
         nav_label=esc(ui["nav"]),
         home_label=esc(ui["home"]),
         cats_label=esc(ui["categories_nav"]),
         cta=esc(ui["cta"]),
         down=arrow("down"),
+        near_stars=near_stars(),
         up=arrow("up"),
         index_label=esc(ui["index"]),
         footer=prose(footer, lang),
@@ -885,7 +1001,10 @@ def render_not_found(data):
 
 
 def build():
+    if hasattr(sys.stdout, "reconfigure"):
+        sys.stdout.reconfigure(encoding="utf-8", errors="replace")
     data = json.loads((ROOT / "projects.json").read_text(encoding="utf-8"))
+    sync_versions(ROOT / "projects.json", data)
     owner, cats, statuses, projects = (
         data["owner"], data["categories"], data["statuses"], data["projects"])
 
@@ -914,6 +1033,7 @@ def build():
     if (ROOT / "videos").is_dir():
         shutil.copytree(ROOT / "videos", PUBLIC / "video")
     render_favicon()
+    render_star_tiles()
     for lang, image in OG_IMAGES.items():
         if image.exists():
             shutil.copy(image, PUBLIC / LANGS[lang]["og"])

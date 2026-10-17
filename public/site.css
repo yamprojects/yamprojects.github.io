@@ -67,6 +67,15 @@
   --rim: rgb(226 220 255 / .75);
   --rim-glow-1: rgb(140 112 255 / .85);
   --rim-glow-2: rgb(47 107 255 / .55);
+  --rim-beam: rgb(214 204 255 / .95);
+  --rim-beam-2: rgb(98 132 255 / .7);
+  --shine: rgb(255 255 255 / .62);
+  --h1-glow: rgb(124 92 255 / .3);
+  --num-glow-1: #d9cfff;
+  --num-glow-2: #7fe3d6;
+  --num-sweep: rgb(255 255 255 / .95);
+  --nebula: 1;
+  --moon: .55;
 
   --st-released: #4ade80;
   --st-soon: #b4a8ff;
@@ -127,6 +136,15 @@
     --rim: rgb(255 255 255 / 1);
     --rim-glow-1: rgb(124 92 255 / .45);
     --rim-glow-2: rgb(240 161 58 / .35);
+    --rim-beam: rgb(124 92 255 / .75);
+    --rim-beam-2: rgb(240 161 58 / .5);
+    --shine: rgb(255 255 255 / .7);
+    --h1-glow: rgb(124 92 255 / .16);
+    --num-glow-1: #7b5cf0;
+    --num-glow-2: #1aa898;
+    --num-sweep: rgb(255 255 255 / .9);
+    --nebula: .55;
+    --moon: .45;
 
     --st-released: #0a5528;
     --st-soon: #4b3fd1;
@@ -485,47 +503,14 @@ a { color: var(--link); }
 .lang:focus-visible { outline-offset: -3px; }
 .lang-short { display: none; }
 
-.motion {
-  display: inline-flex;
-  flex: none;
-  align-items: center;
-  justify-content: center;
-  gap: 7px;
-  min-width: 44px;
-  min-height: 44px;
-  padding: 0 12px;
-  border: 0;
-  border-radius: 999px;
-  background: transparent;
-  color: var(--text);
-  font: inherit;
-  font-size: .875rem;
-  font-weight: 700;
-  cursor: pointer;
-  transition: background-color .25s;
-}
-.motion[hidden] { display: none; }
-.motion:hover { background: var(--glass-2); }
-.motion:focus-visible { outline-offset: -3px; }
-.motion svg { color: var(--link); }
-.motion-play, .motion[aria-pressed="true"] .motion-pause { display: none; }
-.motion[aria-pressed="true"] .motion-play { display: block; }
-.motion[aria-pressed="true"] { background: var(--glass-2); box-shadow: inset 0 0 0 1px var(--edge-strong); }
-@media (prefers-reduced-motion: reduce) {
-  .motion { display: none; }
-}
-@media (max-width: 1099px) {
-  .motion { padding: 0; }
-  .motion-label {
-    position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap;
-  }
-}
-
 @media (max-width: 520px) {
   .topbar-inner { gap: 2px; padding: 5px; max-width: calc(100% - 20px); }
-  .cats a { gap: 6px; padding: 0 8px; font-size: .875rem; }
-  .lang { min-width: 44px; justify-content: center; padding: 0 10px; }
+  .cats a { gap: 6px; padding: 0 9px; font-size: .875rem; }
+  .lang { min-width: 44px; justify-content: center; padding: 0 13px; }
   .lang svg { display: none; }
+}
+@media (max-width: 300px) {
+  .lang { padding: 0 10px; }
   .lang-short { display: inline; }
   .lang-full {
     position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap;
@@ -671,6 +656,12 @@ h1 {
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
+}
+
+/* on phones the hero buttons share the row, or each takes a full row when they do not fit */
+@media (max-width: 600px) {
+  .hero-actions > * { flex: 1 1 auto; justify-content: center; }
+  .hero-actions .btn { width: 100%; }
 }
 
 .hero-meta { display: grid; gap: 18px; min-width: 0; }
@@ -1698,6 +1689,319 @@ details[open] summary::after { margin-top: 4px; transform: rotate(-135deg); }
   font-size: .8rem;
 }
 
+/* ------------------------------------------------------------ light effects
+   Everything here is decoration on top of complete content. The looping parts only move under
+   prefers-reduced-motion: no-preference (see the motion section), with transform or opacity,
+   and the numeral sweep runs twice each time its section comes on screen. */
+
+/* -- a light travelling along the planet rim: a narrow window slides along the arc while the
+      bright copy of the rim inside it slides the other way, so the light moves and the rim
+      stays put (two transforms, no repaint) */
+.rim-light {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: 460px;
+  height: 300px;
+  margin-left: -230px;
+  overflow: hidden;
+  opacity: 0;
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 42%, #000 58%, transparent);
+  mask-image: linear-gradient(to right, transparent, #000 42%, #000 58%, transparent);
+}
+.rim-light > i {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: max(1100px, 150vw);
+  height: 300px;
+  border-radius: 50% 50% 0 0 / 100% 100% 0 0;
+  box-shadow:
+    0 -1.5px 0 0 #fff,
+    0 -6px 18px -2px var(--rim-beam),
+    0 -28px 70px -12px var(--rim-beam-2);
+  translate: -50% 0;
+}
+/* a second, softer glow over the rim */
+.horizon::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: max(1100px, 150vw);
+  height: 300px;
+  border-radius: 50% 50% 0 0 / 100% 100% 0 0;
+  box-shadow: 0 -2px 14px -2px var(--rim-glow-1), 0 -50px 120px -20px var(--rim-glow-2);
+  opacity: .35;
+  translate: -50% 0;
+}
+
+/* -- the sky above the planet: a nebula band, a few faint galaxies and a distant moon, three
+      depths of stars (two drawn tiles from build.py and a few bright stars that twinkle) and a
+      canvas for meteors (site.js). Without scripts, or with reduced motion, it is a still sky. */
+.space {
+  position: absolute;
+  inset: 0 0 -4%;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+  -webkit-mask-image: linear-gradient(to bottom, #000 0, #000 72%, transparent 100%);
+  mask-image: linear-gradient(to bottom, #000 0, #000 72%, transparent 100%);
+}
+.nebula {
+  position: absolute;
+  inset: 0;
+  opacity: var(--nebula);
+  background:
+    radial-gradient(18% 7% at 24% 28%, rgb(196 176 255 / .2), transparent 70%),
+    radial-gradient(11% 4.5% at 71% 66%, rgb(150 222 255 / .16), transparent 70%),
+    radial-gradient(7% 3% at 46% 12%, rgb(255 214 170 / .14), transparent 70%),
+    linear-gradient(calc(-22deg * var(--flip)), transparent 28%, rgb(150 128 255 / .1) 40%,
+      rgb(120 205 235 / .09) 48%, rgb(255 205 165 / .07) 55%, transparent 67%);
+}
+.nebula::before {
+  /* a far moon, lit from the side */
+  content: "";
+  position: absolute;
+  top: 7%;
+  inset-inline-end: 7%;
+  width: clamp(26px, 3.4vw, 46px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(circle at 34% 32%, #fffaf0, #e9e0ff 42%, #8d80c4 72%, #3b3566);
+  box-shadow: inset calc(-9px * var(--flip)) -6px 14px rgb(8 8 24 / .8), 0 0 40px 10px rgb(214 204 255 / .22);
+  opacity: var(--moon);
+}
+.stars { position: absolute; inset: 0; }
+.stars > i {
+  position: absolute;
+  inset: -40px;
+  background: url('img/stars-far-dark.webp') 0 0 / 512px 512px repeat;
+}
+.stars--mid > i { background-image: url('img/stars-mid-dark.webp'); }
+.tw { position: absolute; inset: 0; }
+.stars--near i {
+  position: absolute;
+  width: var(--s);
+  height: var(--s);
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 0 calc(var(--s) * 3) calc(var(--s) * .5) rgb(214 222 255 / .75);
+  opacity: .6;
+}
+.stars--near .tb { background: #d6e2ff; box-shadow: 0 0 calc(var(--s) * 3) calc(var(--s) * .5) rgb(150 186 255 / .8); }
+.stars--near .ty { background: #fff0dc; box-shadow: 0 0 calc(var(--s) * 3) calc(var(--s) * .5) rgb(255 206 150 / .7); }
+.meteors i {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 2px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, rgb(150 170 255 / 0), rgb(190 205 255 / .5) 72%, #fff);
+  opacity: 0;
+  transform-origin: 100% 50%;
+  will-change: transform, opacity;
+}
+.meteors i::after {
+  /* the glowing head */
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: -5px;
+  width: 10px;
+  height: 10px;
+  margin-top: -5px;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, #fff, rgb(210 220 255 / .6) 45%, transparent);
+}
+.meteors i.big { height: 3px; }
+.meteors i.big::after { width: 16px; height: 16px; margin-top: -8px; right: -8px; }
+@media (prefers-color-scheme: light) {
+  .meteors i { background: linear-gradient(90deg, rgb(150 130 240 / 0), rgb(150 130 240 / .35) 72%, #fff); }
+  .meteors i::after { background: radial-gradient(closest-side, #fff, rgb(190 170 255 / .5) 45%, transparent); }
+}
+@media (max-width: 430px) {
+  .stars--near i:nth-child(n + 5) { display: none; }
+}
+@media (prefers-color-scheme: light) {
+  /* a pale dawn sky: fewer, softer stars */
+  .stars--far > i { background-image: url('img/stars-far-light.webp'); }
+  .stars--mid > i { background-image: url('img/stars-mid-light.webp'); }
+  .stars--near i, .stars--near .tb, .stars--near .ty {
+    background: #8f7ce6;
+    box-shadow: 0 0 calc(var(--s) * 2.5) calc(var(--s) * .3) rgb(143 124 230 / .45);
+  }
+  .stars--near i:nth-child(2n) { display: none; }
+}
+
+/* -- the headline: a soft glow behind it, and a shine that passes over the letters (a window
+      that slides across with a bright copy of the text sliding back inside it) */
+h1 { position: relative; }
+h1::before {
+  content: "";
+  position: absolute;
+  inset: 4% -6% -4%;
+  z-index: -1;
+  background: radial-gradient(closest-side, var(--h1-glow), transparent);
+  pointer-events: none;
+}
+.shine {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  display: none;
+  width: 40%;
+  overflow: hidden;
+  pointer-events: none;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 45%, #000 55%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 45%, #000 55%, transparent);
+}
+.shine > span {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 250%;
+  color: var(--shine);
+  -webkit-text-fill-color: var(--shine);
+}
+
+/* -- section numerals: an inner glow fills the outline as the section comes into view, and
+      now and then a light sweeps through the digits */
+.category-num { position: relative; }
+.category-num::before {
+  content: attr(data-num);
+  position: absolute;
+  inset: 0;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  -webkit-text-stroke: 0;
+  pointer-events: none;
+}
+.category-num::before {
+  background-image: linear-gradient(170deg, var(--num-glow-1), color-mix(in oklab, var(--num-glow-2) 60%, transparent) 50%, transparent 90%);
+  opacity: .4;
+}
+/* the sweep: a window slides across the digits with a bright copy sliding back inside it */
+.num-shine {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  display: none;
+  width: 50%;
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 45%, #000 55%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 45%, #000 55%, transparent);
+}
+.num-shine > span {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 200%;
+  color: var(--num-sweep);
+  -webkit-text-fill-color: var(--num-sweep);
+  -webkit-text-stroke: 0;
+}
+
+/* -- category heads: the name and then its blurb rise in as the head scrolls into view (only
+      transform and opacity move, so the layout never changes) */
+
+/* -- the travelling light around each project card, in the card's color: a thin line and a
+      soft halo along the border, each a ring-shaped mask with a rotating wedge of light */
+.beam {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  display: none;
+  padding: 1.5px;
+  overflow: hidden;
+  border-radius: inherit;
+  pointer-events: none;
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+  opacity: .9;
+  transition: opacity .4s ease;
+}
+.beam--halo { padding: 10px; opacity: 0; }
+.beam > i {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 820px;
+  height: 1100px;
+  margin-top: -550px;
+  transform-origin: 0 50%;
+  background: conic-gradient(from 0deg at 0 50%,
+    transparent 0deg 46deg,
+    color-mix(in srgb, var(--card-accent) 0%, transparent) 46deg,
+    color-mix(in srgb, var(--card-accent) 70%, transparent) 78deg,
+    color-mix(in oklab, var(--card-accent-2), white 45%) 87deg,
+    #fff 89.5deg,
+    transparent 91deg 360deg);
+}
+.beam--halo > i {
+  background: conic-gradient(from 0deg at 0 50%,
+    transparent 0deg 56deg,
+    color-mix(in srgb, var(--card-accent) 55%, transparent) 84deg,
+    color-mix(in srgb, var(--card-accent-2) 80%, transparent) 89deg,
+    transparent 92deg 360deg);
+}
+.card:hover .beam, .card:focus-within .beam { opacity: 1; }
+.card:hover .beam--halo, .card:focus-within .beam--halo { opacity: .7; }
+
+/* -- buttons: a light sweeps across on hover and keyboard focus */
+.btn { overflow: hidden; }
+.btn::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  background: linear-gradient(100deg, transparent 30%, rgb(255 255 255 / .34) 50%, transparent 70%);
+  transform: translateX(-135%);
+  pointer-events: none;
+}
+[dir="rtl"] .btn::before { transform: translateX(135%); }
+.btn:hover::before, .btn:focus-visible::before { transform: translateX(135%); transition: transform .8s ease; }
+[dir="rtl"] .btn:hover::before, [dir="rtl"] .btn:focus-visible::before { transform: translateX(-135%); }
+
+/* the hero's main button glows a few times after the page opens */
+.cta { position: relative; display: inline-flex; }
+.cta-glow {
+  position: absolute;
+  inset: -16px -22px;
+  z-index: -1;
+  border-radius: 999px;
+  background: radial-gradient(closest-side, rgb(109 77 255 / .6), transparent);
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* -- device screens: a glass glare sweeps across now and then (the hero) or once as the card
+      scrolls by */
+.glare {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  overflow: hidden;
+  border-radius: inherit;
+  pointer-events: none;
+}
+.glare::before {
+  content: "";
+  position: absolute;
+  top: -30%;
+  bottom: -30%;
+  inset-inline-start: -60%;
+  width: 40%;
+  background: linear-gradient(90deg, transparent, rgb(255 255 255 / .16) 50%, transparent);
+  rotate: 14deg;
+  opacity: 0;
+}
+[dir="rtl"] .glare::before { rotate: -14deg; }
+
 /* ------------------------------------------------------------ motion (only when it is welcome) */
 /* Only transform and opacity move; the hero's motion stops while it is off screen or the tab is
    hidden (.still, from site.js), and below the hero nothing runs on its own. */
@@ -1706,7 +2010,6 @@ details[open] summary::after { margin-top: 4px; transform: rotate(-135deg); }
   html { scroll-behavior: smooth; }
 
   .aurora i:nth-child(1) { animation: drift 46s ease-in-out infinite alternate; }
-  .aurora i:nth-child(2) { animation: drift 38s ease-in-out -12s infinite alternate-reverse; }
 
   .curtains i:nth-child(odd) { animation: sway 17s ease-in-out infinite alternate; }
   .curtains i:nth-child(3) { animation-duration: 21s; animation-delay: -8s; }
@@ -1717,6 +2020,48 @@ details[open] summary::after { margin-top: 4px; transform: rotate(-135deg); }
   .sc-window { animation: float 9s ease-in-out infinite; }
   .sc-phone { animation: float 7.5s ease-in-out -2s infinite; }
 
+  /* rim light, the stars, the headline shine, the screen glare in the hero */
+  .rim-light { opacity: 1; animation: rim-ltr 16s ease-in-out infinite alternate; }
+  .rim-light > i { animation: rim-rtl 16s ease-in-out infinite alternate; }
+  .tw { animation: twinkle 3.2s ease-in-out infinite alternate; }
+  .tw2 { animation-duration: 4.4s; animation-delay: -1.6s; }
+  .tw3 { animation-duration: 5.6s; animation-delay: -3.1s; }
+
+
+  .shine { display: block; animation: shine-ltr 9s ease-in-out 1.6s infinite both; }
+  .shine > span { animation: shine-text-ltr 9s ease-in-out 1.6s infinite both; }
+  [dir="rtl"] .shine { animation-name: shine-rtl; }
+  [dir="rtl"] .shine > span { animation-name: shine-text-rtl; }
+
+  .cta-glow { animation: cta-pulse 2.8s ease-in-out 1.8s 3; }
+
+  .glare::before { opacity: 1; translate: 0 0; }
+  .showcase .glare::before { animation: glare-ltr 11s ease-in-out 3s 4 both; }
+  .showcase .sc-phone .glare::before { animation-delay: 6.5s; }
+  [dir="rtl"] .showcase .glare::before { animation-name: glare-rtl; }
+
+  /* the card border light: only while that card is on screen and the tab is visible */
+  .js .beam { display: block; }
+  .js .beam > i { animation: orbit 10s linear infinite; animation-play-state: paused; }
+  .js .card:nth-child(2n) .beam > i { animation-delay: -5s; }
+  .js .card.lit .beam:not(.beam--halo) > i,
+  .js .card.lit:is(:hover, :focus-within) .beam--halo > i { animation-play-state: running; }
+
+  /* the numeral sweep: only while its section is on screen */
+  .js .num-shine { display: block; transform: translateX(-100%); }
+  .js .category.lit .num-shine { animation: num-win 2.4s ease-in-out .6s 2 both; }
+  .js .category.lit .num-shine > span { animation: num-text 2.4s ease-in-out .6s 2 both; }
+
+  .tab-hidden .beam > i,
+  .tab-hidden .num-shine,
+  .tab-hidden .num-shine > span { animation-play-state: paused !important; }
+
+  .still .rim-light,
+  .still .rim-light > i,
+  .still .tw,
+  .still .shine,
+  .still .shine > span,
+  .still .showcase .glare::before,
   .still .aurora i,
   .still .curtains i,
   .still .btn--glow::after,
@@ -1738,6 +2083,27 @@ details[open] summary::after { margin-top: 4px; transform: rotate(-135deg); }
   /* The devices in a card rise into their frame as the card scrolls into view. Only position is
      animated, never visibility, so a card is complete at every point of the scroll. */
   @supports (animation-timeline: view()) {
+    /* category heads: the name, then the blurb, rise in as the head scrolls into view */
+    .js .category-title {
+      animation: word-rise linear both;
+      animation-timeline: view();
+      animation-range: entry 5% entry 65%;
+    }
+    .js .category-num { animation: word-rise linear both; animation-timeline: view(); animation-range: entry 0% entry 55%; }
+    /* the numerals light up from inside as their section arrives */
+    .js .category-num::before {
+      animation: num-glow linear both;
+      animation-timeline: view();
+      animation-range: entry 0% cover 45%;
+    }
+    /* card screens: one glare sweep as the card goes by */
+    .js .stage > :is(.phone--front, .window--front) .glare::before {
+      animation: glare-scroll-ltr linear both;
+      animation-timeline: view();
+      animation-range: cover 25% cover 75%;
+    }
+    .js[dir="rtl"] .stage > :is(.phone--front, .window--front) .glare::before { animation-name: glare-scroll-rtl; }
+
     .js .stage > .phone,
     .js .stage > .window,
     .js .stage > .shot {
@@ -1750,6 +2116,52 @@ details[open] summary::after { margin-top: 4px; transform: rotate(-135deg); }
     .js .stage > .window--back { animation-name: lift-far; }
   }
 }
+
+@keyframes rim-ltr { from { transform: translateX(-40vw); } to { transform: translateX(40vw); } }
+@keyframes rim-rtl { from { transform: translateX(40vw); } to { transform: translateX(-40vw); } }
+@keyframes twinkle { from { opacity: .15; } to { opacity: 1; } }
+
+
+@keyframes shine-ltr {
+  0% { transform: translateX(-100%); }
+  28%, 100% { transform: translateX(250%); }
+}
+@keyframes shine-text-ltr {
+  0% { transform: translateX(40%); }
+  28%, 100% { transform: translateX(-100%); }
+}
+@keyframes shine-rtl {
+  0% { transform: translateX(250%); }
+  28%, 100% { transform: translateX(-100%); }
+}
+@keyframes shine-text-rtl {
+  0% { transform: translateX(-100%); }
+  28%, 100% { transform: translateX(40%); }
+}
+
+@keyframes cta-pulse {
+  0%, 100% { opacity: 0; transform: scale(.92); }
+  50% { opacity: .9; transform: scale(1.06); }
+}
+
+@keyframes glare-ltr {
+  0%, 82% { transform: translateX(0); }
+  100% { transform: translateX(360%); }
+}
+@keyframes glare-rtl {
+  0%, 82% { transform: translateX(0); }
+  100% { transform: translateX(-360%); }
+}
+@keyframes glare-scroll-ltr { from { transform: translateX(0); } to { transform: translateX(360%); } }
+@keyframes glare-scroll-rtl { from { transform: translateX(0); } to { transform: translateX(-360%); } }
+
+@keyframes orbit { to { rotate: 360deg; } }
+
+@keyframes num-win { from { transform: translateX(-100%); } to { transform: translateX(200%); } }
+@keyframes num-text { from { transform: translateX(50%); } to { transform: translateX(-100%); } }
+@keyframes num-glow { from { opacity: .1; } to { opacity: .6; } }
+
+@keyframes word-rise { from { opacity: 0; transform: translateY(.42em); } }
 
 @keyframes drift {
   0% { transform: translate3d(0, 0, 0) scale(1); }
@@ -1794,6 +2206,7 @@ details[open] summary::after { margin-top: 4px; transform: rotate(-135deg); }
 .static *, .static *::before, .static *::after { animation: none !important; }
 
 @media (prefers-reduced-motion: reduce) {
+  .btn::before { display: none; }
   .card, .btn, .btn .arrow, .cats a, .lang, .index a, .to-top, .donate, summary::after,
   .stage > .phone, .stage > .window, .stage .shot, .stage--art svg, .card::after { transition: none; }
   .card:hover, .btn:hover, .donate:hover,
