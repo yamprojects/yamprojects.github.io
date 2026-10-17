@@ -1692,7 +1692,7 @@ details[open] summary::after { margin-top: 4px; transform: rotate(-135deg); }
 /* ------------------------------------------------------------ light effects
    Everything here is decoration on top of complete content. The looping parts only move under
    prefers-reduced-motion: no-preference (see the motion section), with transform or opacity,
-   and the numeral sweep runs twice each time its section comes on screen. */
+   and the numeral sweep loops (in step for all numerals) while its section is on screen. */
 
 /* -- a light travelling along the planet rim: a narrow window slides along the arc while the
       bright copy of the rim inside it slides the other way, so the light moves and the rim
@@ -2049,8 +2049,10 @@ h1::before {
 
   /* the numeral sweep: only while its section is on screen */
   .js .num-shine { display: block; transform: translateX(-100%); }
-  .js .category.lit .num-shine { animation: num-win 2.4s ease-in-out .6s 2 both; }
-  .js .category.lit .num-shine > span { animation: num-text 2.4s ease-in-out .6s 2 both; }
+  /* one shared loop for every numeral: site.js gives each section the same phase of a 6 s
+     clock (--sweep-delay) when it comes on screen, so 01 and 02 always sweep together */
+  .js .category.lit .num-shine { animation: num-win 6s ease-in-out var(--sweep-delay, 0s) infinite both; }
+  .js .category.lit .num-shine > span { animation: num-text 6s ease-in-out var(--sweep-delay, 0s) infinite both; }
 
   .tab-hidden .beam > i,
   .tab-hidden .num-shine,
@@ -2157,8 +2159,14 @@ h1::before {
 
 @keyframes orbit { to { rotate: 360deg; } }
 
-@keyframes num-win { from { transform: translateX(-100%); } to { transform: translateX(200%); } }
-@keyframes num-text { from { transform: translateX(50%); } to { transform: translateX(-100%); } }
+@keyframes num-win {
+  0% { transform: translateX(-100%); }
+  45%, 100% { transform: translateX(200%); }
+}
+@keyframes num-text {
+  0% { transform: translateX(50%); }
+  45%, 100% { transform: translateX(-100%); }
+}
 @keyframes num-glow { from { opacity: .1; } to { opacity: .6; } }
 
 @keyframes word-rise { from { opacity: 0; transform: translateY(.42em); } }

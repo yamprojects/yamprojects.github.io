@@ -24,7 +24,14 @@
       }).observe(hero);
     }
     const lit = new IntersectionObserver((entries) => {
-      for (const entry of entries) entry.target.classList.toggle('lit', entry.isIntersecting);
+      for (const entry of entries) {
+        const el = entry.target;
+        // sections join the numerals' shared 6 s loop at the page clock's current phase
+        if (entry.isIntersecting && el.classList.contains('category')) {
+          el.style.setProperty('--sweep-delay', `${-((document.timeline?.currentTime ?? performance.now()) % 6000).toFixed(0)}ms`);
+        }
+        el.classList.toggle('lit', entry.isIntersecting);
+      }
     });
     document.querySelectorAll('.card, .category').forEach((el) => lit.observe(el));
   }
