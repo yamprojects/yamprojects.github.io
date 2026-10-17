@@ -8,7 +8,7 @@
     "donate": { "url": "", "label": "תמיכה בפרויקטים", "en": { "label": "Support my projects" } },
     "ads": { "client": "", "slots": { "between": "", "footer": "" } },
     "en": {
-      "eyebrow": "Portfolio",
+      "eyebrow": "My work",
       "title": "Yam's Projects",
       "lead": "An Android app, a Windows app and Hebrew game translations. Each project has a website of its own."
     }
