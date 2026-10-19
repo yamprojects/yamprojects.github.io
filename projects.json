@@ -7,6 +7,7 @@
     "site_url": "https://yamprojects.github.io/",
     "donate": { "url": "https://ko-fi.com/yamt2000", "label": "תמיכה בפרויקטים", "en": { "label": "Support my projects" } },
     "ads": { "client": "", "slots": { "between": "", "footer": "" } },
+    "search_console": "google1b9506e1c8f7c022",
     "en": {
       "eyebrow": "My work",
       "title": "Yam's Projects",

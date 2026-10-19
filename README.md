@@ -56,6 +56,8 @@ python tools/build.py
   `between` (בין הקטגוריות) ו-`footer` (לפני התחתית). בלי מזהים פועלות רק המודעות האוטומטיות.
   חשוב לדעת: AdSense צריך לאשר את האתר, וכנראה ידרוש דומיין משלו (לא `github.io`).
   למבקרים מאירופה ומבריטניה מפעילים ב-AdSense את הודעת ההסכמה של Google: Privacy & messaging.
+- `search_console`: קובץ האימות של Google Search Console (שיטת «קובץ HTML»), בלי `.html`.
+  הבנייה כותבת את `public/<הקוד>.html`. הקוד שייך לחשבון Google, ולכן זה אותו קובץ שיש בהנחתי וב-Steam Switcher.
 
 ## גרסאות
 

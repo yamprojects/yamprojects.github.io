@@ -1067,6 +1067,12 @@ def build():
         (PUBLIC / "ads.txt").write_text(
             f"google.com, {client.removeprefix('ca-')}, DIRECT, f08c47fec0942fa0\n", encoding="utf-8")
 
+    # Google Search Console's HTML-file verification: one token per Google account.
+    token = owner.get("search_console", "").strip().removesuffix(".html")
+    if token:
+        (PUBLIC / f"{token}.html").write_text(
+            f"google-site-verification: {token}.html", encoding="utf-8")
+
     if not base:
         print("site_url is empty in projects.json: no share image, canonical links or sitemap yet")
     for image in OG_IMAGES.values():
