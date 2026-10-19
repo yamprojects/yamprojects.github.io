@@ -165,7 +165,7 @@
       "accent": "#f07a1a",
       "accent2": "#ffb547",
       "links": [
-        { "label": "לאתר התרגומים", "url": "https://matorgam.pages.dev/" }
+        { "label": "לאתר שחקו בעברית", "url": "https://playivrit.pages.dev/" }
       ],
       "en": {
         "name": "Hebrew game translations",
@@ -179,7 +179,7 @@
         "tech": ["Python", "Reverse engineering"],
         "alt": "Naruto holding a Rasengan in NARUTO: Ultimate Ninja STORM",
         "links": [
-          { "label": "Translations site (Hebrew)", "url": "https://matorgam.pages.dev/", "hreflang": "he" }
+          { "label": "Playivrit site (Hebrew)", "url": "https://playivrit.pages.dev/", "hreflang": "he" }
         ]
       }
     }
