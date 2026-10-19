@@ -157,7 +157,6 @@
         "גופן עברי שמתאים לסגנון של המשחק",
         "כלים משלי לפתיחה ולבנייה מחדש של קבצי המשחק, ומתקין שבונה את העברית מהעותק של השחקן בלי להפיץ קבצי משחק"
       ],
-      "tech": ["Python", "הנדסה לאחור"],
       "image": "naruto-hero.jpg",
       "alt": "נארוטו מחזיק ראסנגן במשחק NARUTO: Ultimate Ninja STORM",
       "flag": "il",
@@ -177,7 +176,6 @@
           "A Hebrew font that matches the game's style",
           "My own tools for unpacking and rebuilding the game's files, and an installer that builds the Hebrew from the player's own copy without distributing game files"
         ],
-        "tech": ["Python", "Reverse engineering"],
         "alt": "Naruto holding a Rasengan in NARUTO: Ultimate Ninja STORM",
         "links": [
           { "label": "Playivrit site (Hebrew)", "url": "https://playivrit.pages.dev/", "hreflang": "he" }
