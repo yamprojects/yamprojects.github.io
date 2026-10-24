@@ -31,6 +31,7 @@ python tools/build.py
 | `image`, `alt` | תמונה מתוך `images/` (צילום מסך או תמונת משחק), נחתכת ל-16:10 מהמרכז ומוצגת במסגרת זכוכית. כשיש גם `device` היא לא מוצגת בכרטיס |
 | `crop: "top"` / `fit: "contain"` | לחתוך מלמעלה / להציג את כל התמונה (ללוגו) |
 | `art` | כשאין תמונה: כריכה מצוירת (`rings`, `wave3d`, `voice`, `agents`, `timing`, `waveform`, `hex`, `chip`, `letters`) |
+| `schema` | לנתונים למנועי חיפוש: `{ "type": "SoftwareApplication", "operatingSystem": "...", "category": "..." }` או `{ "type": "WebSite" }` |
 | `flag` | דגל קטן בפינה של התמונה (כרגע רק `"il"`, «תרגום ישראלי») |
 | `icon`, `glyph` | אייקון מתוך `images/` (PNG או SVG); בלי אייקון מוצגת האות `glyph` על אריח צבעוני |
 | `accent`, `accent2` | צבעי הכרטיס והכריכה, וגם של הזוהר ברקע. צבע הטקסט על הכפתור (כהה או לבן) נבחר לפי ניגודיות |
@@ -58,6 +59,21 @@ python tools/build.py
   למבקרים מאירופה ומבריטניה מפעילים ב-AdSense את הודעת ההסכמה של Google: Privacy & messaging.
 - `search_console`: קובץ האימות של Google Search Console (שיטת «קובץ HTML»), בלי `.html`.
   הבנייה כותבת את `public/<הקוד>.html`. הקוד שייך לחשבון Google, ולכן זה אותו קובץ שיש בהנחתי וב-Steam Switcher.
+
+## מונה מבקרים (כבוי)
+
+`owner.analytics.goatcounter` – כל עוד הוא ריק אין באתר שום סקריפט מדידה.
+כדי להפעיל: פותחים חשבון חינמי ב-GoatCounter (goatcounter.com) ובוחרים קוד לאתר, למשל `yamprojects`,
+ואז כותבים אותו כאן (רק הקוד, בלי `https://` ובלי `.goatcounter.com`) ובונים מחדש.
+שני העמודים יטענו אז את `https://gc.zgo.at/count.js`. GoatCounter לא משתמש בעוגיות, אז הכיתוב בתחתית נשאר כמו שהוא.
+
+## אייקונים ונתונים למנועי חיפוש
+
+`tools/og.py` מצייר גם את אייקוני מסך הבית מסימן «ים» לתוך `images/icons/`
+(`apple-touch-icon.png` 180, `icon-192.png`, `icon-512.png`, ו-`icon-maskable-512.png` עם שוליים בטוחים).
+הבנייה מעתיקה אותם ל-`public/icons/` וכותבת `site.webmanifest`. בכל עמוד יש גם JSON-LD (schema.org):
+האתר, היוצר (`owner.name`, ובאנגלית `owner.en.name`), והפרויקטים לפי השדה `schema` של כל פרויקט
+(`SoftwareApplication` עם `operatingSystem` ו-`category`, או `WebSite`). הגרסה נלקחת מ-`version`.
 
 ## גרסאות
 

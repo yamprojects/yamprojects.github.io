@@ -1,5 +1,5 @@
 """Renders the share previews images/og.jpg (Hebrew) and images/og-en.jpg (English), 1200x630,
-with headless Chrome or Edge.
+and the home-screen icons in images/icons/ (from the "ים" brand mark), with headless Chrome or Edge.
 
     python tools/og.py
 
@@ -19,7 +19,7 @@ from pathlib import Path
 
 from PIL import Image
 
-from build import (LANGS, OG_IMAGES, OG_SIZE, PUBLIC, ROOT, accent2, aurora_style, build, esc,
+from build import (ICON_FILES, LANGS, OG_IMAGES, OG_SIZE, PUBLIC, ROOT, accent2, aurora_style, build, esc,
                    localize, render_screen, render_thumb)
 
 BROWSERS = [
@@ -87,22 +87,75 @@ def page(data, lang):
     )
 
 
-def shoot(browser, html, out):
+def screenshot(browser, html, size):
+    """Draws a page at size (w, h) and returns it as an RGB image."""
     with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as tmp:
         tmp = Path(tmp)
-        html_path, shot = tmp / "og.html", tmp / "og.png"
+        html_path, shot = tmp / "page.html", tmp / "page.png"
         html_path.write_text(html, encoding="utf-8")
         subprocess.run([
             str(browser), "--headless=new", "--disable-gpu", "--hide-scrollbars",
             "--no-first-run", "--force-device-scale-factor=1",
-            f"--window-size={OG_SIZE[0]},{OG_SIZE[1]}", "--virtual-time-budget=3000",
+            f"--window-size={size[0]},{size[1]}", "--virtual-time-budget=3000",
             f"--user-data-dir={tmp / 'profile'}", f"--screenshot={shot}", html_path.as_uri(),
         ], check=True, capture_output=True, timeout=90)
         with Image.open(shot) as image:
-            if image.size != OG_SIZE:
-                raise SystemExit(f"the browser drew {image.size}, expected {OG_SIZE}")
-            image.convert("RGB").save(out, "JPEG", quality=90, optimize=True, progressive=True,
-                                      subsampling=0)
+            if image.size != tuple(size):
+                raise SystemExit(f"the browser drew {image.size}, expected {size}")
+            return image.convert("RGB")
+
+
+def shoot(browser, html, out):
+    screenshot(browser, html, OG_SIZE).save(out, "JPEG", quality=90, optimize=True, progressive=True,
+                                            subsampling=0)
+
+
+ICON_MASTER = 1024
+ICON_PAGE = """<!doctype html><html lang="he" dir="rtl"><head><meta charset="utf-8"><style>
+  @font-face { font-family: 'Rubik'; src: url('$rubik') format('woff2'); font-weight: 300 900; }
+  html, body { margin: 0; width: ${size}px; height: ${size}px; overflow: hidden; }
+  body {
+    display: grid;
+    place-items: center;
+    background:
+      radial-gradient(80% 80% at 30% 20%, rgb(255 255 255 / .45), transparent 60%),
+      linear-gradient(135deg, #7c5cff, #2f6bff 55%, #f0a13a);
+  }
+  b {
+    color: #fff;
+    font: 800 ${glyph}px/1 'Rubik', sans-serif;
+    letter-spacing: -0.02em;
+    text-shadow: 0 ${shadow}px ${blur}px rgb(20 10 70 / .28);
+    translate: 0 -2%;
+  }
+</style></head><body><b>ים</b></body></html>"""
+
+
+def render_icons(browser):
+    """The home-screen icons: the brand mark drawn once large in the browser (Pillow cannot lay
+    out Hebrew here), then scaled. "any" icons get round corners; the maskable one and the
+    apple-touch icon stay square (the system shapes them), with the letters inside the safe zone."""
+    rubik = data_uri(ROOT / "fonts" / "rubik.woff2")
+    masters = {}
+    for kind, glyph in (("any", .6), ("maskable", .42)):
+        html = string.Template(ICON_PAGE).substitute(
+            rubik=rubik, size=ICON_MASTER, glyph=round(ICON_MASTER * glyph),
+            shadow=round(ICON_MASTER * .012), blur=round(ICON_MASTER * .04))
+        masters[kind] = screenshot(browser, html, (ICON_MASTER, ICON_MASTER))
+    out_dir = ROOT / "images" / "icons"
+    out_dir.mkdir(parents=True, exist_ok=True)
+    for name, (size, kind, rounded) in ICON_FILES.items():
+        im = masters[kind].resize((size, size), Image.LANCZOS)
+        if rounded:
+            from PIL import ImageDraw
+            scale = 4
+            mask = Image.new("L", (size * scale, size * scale), 0)
+            ImageDraw.Draw(mask).rounded_rectangle((0, 0, size * scale - 1, size * scale - 1),
+                                                   radius=round(size * scale * .28), fill=255)
+            im = im.convert("RGBA")
+            im.putalpha(mask.resize((size, size), Image.LANCZOS))
+        im.save(out_dir / name, optimize=True)
+        print(f"images/icons/{name}: {size}x{size}")
 
 
 def main():
@@ -114,6 +167,7 @@ def main():
     data = json.loads((ROOT / "projects.json").read_text(encoding="utf-8"))
     for lang, out in OG_IMAGES.items():
         shoot(browser, page(data, lang), out)
+    render_icons(browser)
 
     build()  # copy the new images into public/
     for out in OG_IMAGES.values():

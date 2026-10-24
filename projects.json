@@ -8,7 +8,9 @@
     "donate": { "url": "https://ko-fi.com/yamt2000", "label": "תמיכה בפרויקטים", "en": { "label": "Support my projects" } },
     "ads": { "client": "", "slots": { "between": "", "footer": "" } },
     "search_console": "google1b9506e1c8f7c022",
+    "analytics": { "goatcounter": "" },
     "en": {
+      "name": "Yam",
       "eyebrow": "My work",
       "title": "Yam's Projects",
       "lead": "An Android app, a Windows app and Hebrew game translations. Each project has a website of its own."
@@ -55,6 +57,7 @@
       "status": "released",
       "version": "1.8.7",
       "version_source": { "url": "https://hinachti.github.io/latest.json", "key": "versionName" },
+      "schema": { "type": "SoftwareApplication", "operatingSystem": "Android", "category": "LifestyleApplication" },
       "summary": "אפליקציית אנדרואיד שעוזרת להקפיד על הנחת תפילין כל בוקר: הטלפון נפתח ברגע שמדווחים שהתפילין הונחו.",
       "highlights": [
         "זמני היום ל-54 ערים או לפי המיקום, מחושבים במכשיר עצמו",
@@ -102,6 +105,7 @@
       "status": "released",
       "version": "1.0.7",
       "version_source": { "url": "https://steam-switcher.gitlab.io/latest.json", "key": "version" },
+      "schema": { "type": "SoftwareApplication", "operatingSystem": "Windows", "category": "UtilitiesApplication" },
       "summary": "תוכנה קטנה ומהירה לווינדוס שמחליפה בין חשבונות Steam בלחיצה כפולה, בלי להקליד סיסמאות שוב.",
       "highlights": [
         "לא שומרת ולא מבקשת סיסמאות",
@@ -158,6 +162,7 @@
       "image": "naruto-hero.jpg",
       "alt": "נארוטו מחזיק ראסנגן במשחק NARUTO: Ultimate Ninja STORM",
       "flag": "il",
+      "schema": { "type": "WebSite", "inLanguage": "he" },
       "icon": "playivrit-icon.svg",
       "glyph": "א",
       "accent": "#f07a1a",

@@ -37,6 +37,15 @@ SIZES = "(min-width: 960px) 620px, (min-width: 760px) 46vw, 92vw"
 OG_SIZE = (1200, 630)
 OG_IMAGES = {"he": ROOT / "images" / "og.jpg", "en": ROOT / "images" / "og-en.jpg"}
 OG_IMAGE = OG_IMAGES["he"]
+# Home-screen icons (drawn by tools/og.py into images/icons/): name -> (size, master, round corners)
+ICON_FILES = {
+    "apple-touch-icon.png": (180, "any", False),
+    "icon-192.png": (192, "any", True),
+    "icon-512.png": (512, "any", True),
+    "icon-maskable-512.png": (512, "maskable", False),
+}
+THEME_DARK = "#07070e"
+GOATCOUNTER = re.compile(r"[a-z0-9][a-z0-9-]{0,62}")
 
 # The two pages. "root" leads from the page back to the site root, for the assets.
 LANGS = {
@@ -915,9 +924,10 @@ def render_page(data, lang, base, today):
     for code, other in LANGS.items():
         if code != lang:
             head += f'\n  <meta property="og:locale:alternate" content="{other["locale"]}">'
-    ads_head = ""
+    head += json_ld(data, lang, base, url, owner, projects)
+    ads_head = analytics_head(data["owner"])
     if client:
-        ads_head = ('\n  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js'
+        ads_head += ('\n  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js'
                     f'?client={esc(client)}" crossorigin="anonymous"></script>')
     footer = ui["footer_ads"] if client else ui["footer"]
     privacy = (f'<p class="foot-privacy"><a href="{ADS_POLICY}" target="_blank" rel="noopener">'
@@ -984,6 +994,77 @@ def render_page(data, lang, base, today):
     out.write_text(page, encoding="utf-8")
 
 
+def json_ld(data, lang, base, url, owner, projects):
+    """Structured data for search engines: the site, its author and the projects (no ratings,
+    nothing that is not on the page). Only with site_url, since it needs absolute URLs."""
+    if not base:
+        return ""
+    person = {"@type": "Person", "@id": f"{base}#person", "name": owner["name"], "url": base,
+              "sameAs": []}
+    items = []
+    for p in projects:
+        schema = p.get("schema")
+        link = (p.get("links") or [{}])[0].get("url")
+        if not schema or not link:
+            continue
+        if link not in person["sameAs"]:
+            person["sameAs"].append(link)
+        entry = {"@type": schema["type"], "name": p["name"], "description": p["summary"], "url": link,
+                 "author": {"@id": f"{base}#person"}}
+        if schema["type"] == "SoftwareApplication":
+            entry.update({"operatingSystem": schema["operatingSystem"],
+                          "applicationCategory": schema["category"],
+                          "offers": {"@type": "Offer", "price": "0", "priceCurrency": "ILS"}})
+            if p.get("version"):
+                entry["softwareVersion"] = p["version"]
+        if schema.get("inLanguage"):
+            entry["inLanguage"] = schema["inLanguage"]
+        items.append({"@type": "ListItem", "position": len(items) + 1, "item": entry})
+    graph = [
+        {"@type": "WebSite", "@id": f"{url}#website", "url": url, "name": owner["title"],
+         "description": owner["lead"], "inLanguage": lang, "author": {"@id": f"{base}#person"}},
+        person,
+        {"@type": "ItemList", "name": owner["title"], "itemListElement": items},
+    ]
+    text = json.dumps({"@context": "https://schema.org", "@graph": graph}, ensure_ascii=False, indent=1)
+    json.loads(text)  # always valid
+    return '\n  <script type="application/ld+json">\n' + text.replace("</", "<\\/") + "\n  </script>"
+
+
+def analytics_head(owner):
+    """GoatCounter (no cookies), only once owner.analytics.goatcounter holds the account code."""
+    code = (owner.get("analytics") or {}).get("goatcounter", "").strip()
+    if not code:
+        return ""
+    if not GOATCOUNTER.fullmatch(code):
+        raise SystemExit(f"owner.analytics.goatcounter must be the account code, like 'yamprojects', not {code!r}")
+    return (f'\n  <script data-goatcounter="https://{code}.goatcounter.com/count" async '
+            'src="https://gc.zgo.at/count.js"></script>')
+
+
+def render_manifest(owner):
+    """site.webmanifest for installing the site to a home screen."""
+    manifest = {
+        "name": owner["title"],
+        "short_name": owner["name"],
+        "lang": "he",
+        "dir": "rtl",
+        "start_url": "/",
+        "scope": "/",
+        "display": "standalone",
+        "theme_color": THEME_DARK,
+        "background_color": THEME_DARK,
+        "icons": [
+            {"src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any"},
+            {"src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any"},
+            {"src": "/icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png",
+             "purpose": "maskable"},
+        ],
+    }
+    (PUBLIC / "site.webmanifest").write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + "\n",
+                                             encoding="utf-8")
+
+
 def render_not_found(data):
     """One 404 page for both languages (GitHub Pages serves it at any missing URL)."""
     he, en = data["ui"]["he"], data["ui"]["en"]
@@ -1034,6 +1115,13 @@ def build():
         shutil.copytree(ROOT / "videos", PUBLIC / "video")
     render_favicon()
     render_star_tiles()
+    icons = ROOT / "images" / "icons"
+    if all((icons / name).exists() for name in ICON_FILES):
+        shutil.copytree(icons, PUBLIC / "icons")
+        shutil.copy(icons / "apple-touch-icon.png", PUBLIC / "apple-touch-icon.png")  # iOS asks the root too
+        render_manifest(owner)
+    else:
+        print("images/icons/ is incomplete: run tools/og.py")
     for lang, image in OG_IMAGES.items():
         if image.exists():
             shutil.copy(image, PUBLIC / LANGS[lang]["og"])
