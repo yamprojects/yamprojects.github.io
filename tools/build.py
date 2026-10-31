@@ -719,7 +719,8 @@ def status_badge(p, statuses, ui, sr=True):
 
 
 def render_showcase(projects, statuses, ui, root, lang):
-    """The floating composition beside the headline: one window, one phone and a few glass tags."""
+    """The floating composition beside the headline: one window, one phone, the project marked
+    "hero" as a framed picture (a website has no device of its own) and a few glass tags."""
     def first(kind):
         return next((p for p in projects if p.get("device", {}).get("type") == kind), None)
 
@@ -728,7 +729,8 @@ def render_showcase(projects, statuses, ui, root, lang):
         return ""
     layout = "both" if window and phone else ("window" if window else "phone")
     shown = [p for p in (window, phone) if p]
-    extra = next((p for p in projects if p not in shown), None)
+    web = next((p for p in projects if p.get("hero") and p.get("image") and p not in shown), None)
+    extra = next((p for p in projects if p not in shown and p is not web), None)
 
     items = []
     for p in shown:
@@ -738,8 +740,15 @@ def render_showcase(projects, statuses, ui, root, lang):
         img = screen_img(p["device"]["screens"][0], kind, "hero", root, "", loading)
         items.append(f'<div class="sc sc-{kind}" style="--card-accent: {esc(p["accent"])}">'
                      f'<div class="{kind} {kind}--front">{img}{GLARE}</div></div>')
+    if web:
+        srcset, src, w, h = render_image(web["image"], web.get("fit"), web.get("crop"))
+        srcset = ", ".join(f"{root}{part}" for part in srcset.split(", "))
+        items.append(f'<div class="sc sc-web" style="--card-accent: {esc(web["accent"])}">'
+                     f'<div class="window window--front"><img src="{root}{src}" srcset="{srcset}" '
+                     f'sizes="(min-width: 960px) 270px, 46vw" width="{w}" height="{h}" alt="" '
+                     f'loading="lazy" decoding="async">{GLARE}</div></div>')
     tags = []
-    for slot, p in (("window", window), ("phone", phone), ("extra", extra)):
+    for slot, p in (("window", window), ("phone", phone), ("web", web), ("extra", extra)):
         if not p:
             continue
         version = f' <span dir="ltr"{version_attrs(p)}>v{esc(p["version"])}</span>' if p.get("version") else ""
@@ -754,7 +763,7 @@ def render_showcase(projects, statuses, ui, root, lang):
             f'{thumb}<span class="sc-tag-text">'
             f'<b{other_dir(p["name"], lang)}>{esc(p["name"])}</b>'
             f'<small>{status_badge(p, statuses, ui, sr=False)}{version}</small></span></div>')
-    return (f'\n      <div class="showcase showcase--{layout}" aria-hidden="true">'
+    return (f'\n      <div class="showcase showcase--{layout}{" showcase--web" if web else ""}" aria-hidden="true">'
             f'<div class="sc-halo"></div>{"".join(items)}{"".join(tags)}</div>')
 
 

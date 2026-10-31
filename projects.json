@@ -3,7 +3,7 @@
     "name": "ים",
     "eyebrow": "תיק עבודות",
     "title": "הפרויקטים של ים",
-    "lead": "אפליקציה לאנדרואיד, תוכנה לווינדוס ותרגומי משחקים לעברית. לכל פרויקט יש אתר משלו.",
+    "lead": "אפליקציה לאנדרואיד, תוכנה לווינדוס, אתר לשיחה עם דמות בתלת-ממד ותרגומי משחקים לעברית. לכל פרויקט יש אתר משלו.",
     "site_url": "https://yamprojects.github.io/",
     "donate": { "url": "https://ko-fi.com/yamt2000", "label": "תמיכה בפרויקטים", "en": { "label": "Support my projects" } },
     "ads": { "client": "", "slots": { "between": "", "footer": "" } },
@@ -13,7 +13,7 @@
       "name": "Yam",
       "eyebrow": "My work",
       "title": "Yam's Projects",
-      "lead": "An Android app, a Windows app and Hebrew game translations. Each project has a website of its own."
+      "lead": "An Android app, a Windows app, a website for chatting with a 3D character and Hebrew game translations. Each project has a website of its own."
     }
   },
 
@@ -22,6 +22,8 @@
       "en": { "label": "Games", "blurb": "Shooters, climbers and RPGs, most of them running right in the browser." } },
     { "id": "apps", "label": "אפליקציות", "blurb": "כל אחת להורדה מהאתר שלה.",
       "en": { "label": "Apps", "blurb": "Each one can be downloaded from its own website." } },
+    { "id": "web", "label": "אתרים", "blurb": "פרויקטים שרצים ישר בדפדפן.",
+      "en": { "label": "Websites", "blurb": "Projects that run right in the browser." } },
     { "id": "tools", "label": "כלים ובוטים", "blurb": "כלים שקוראים זיכרון, מאזינים לאודיו ובודקים חומרה.",
       "en": { "label": "Tools & bots", "blurb": "Tools that read memory, listen to audio and test hardware." } },
     { "id": "translations", "label": "תרגומים", "blurb": "תרגומי מעריצים לעברית למשחקי מחשב.",
@@ -184,6 +186,46 @@
           { "label": "Playivrit site (Hebrew)", "url": "https://playivrit.pages.dev/", "hreflang": "he" }
         ]
       }
+    },
+
+    {
+      "slug": "emberia",
+      "name": "Emberia",
+      "subtitle": "אמבריה",
+      "kicker": "אתר לשיחה עם דמות",
+      "category": "web",
+      "status": "dev",
+      "schema": { "type": "WebSite", "inLanguage": "he" },
+      "summary": "אתר שבו מדברים בצ'אט עם דמות מונפשת בתלת-ממד, בתוך עולם שלם בדפדפן. לגיל 18 ומעלה.",
+      "highlights": [
+        "הדמות זוכרת את השיחות עם כל משתמש, ואפשר לבחור לה בגדים",
+        "בית שמרהטים בעצמכם, בלחיצות או בבקשה בצ'אט",
+        "השיחות נשמרות מוצפנות, והשרת של האתר לא יכול לקרוא אותן",
+        "כל משתמש מחבר מודל משלו: Ollama במחשב או מפתח OpenRouter"
+      ],
+      "image": "emberia.jpg",
+      "hero": true,
+      "alt": "דמות עם שיער חום ארוך עומדת בפארק של Emberia: עצי דובדבן פורחים, שער טוריי אדום, איילים והר מושלג",
+      "icon": "emberia-icon.svg",
+      "accent": "#e0559a",
+      "accent2": "#ff9ccb",
+      "links": [
+        { "label": "לאתר Emberia", "url": "https://emberia.pages.dev/" }
+      ],
+      "en": {
+        "kicker": "Character chat website",
+        "summary": "A website where you chat with an animated 3D character, in a whole world that runs in the browser. For ages 18 and up.",
+        "highlights": [
+          "The character remembers its chats with each user, and you can pick its outfit",
+          "A home you furnish yourself, with clicks or by asking in the chat",
+          "Chats are stored encrypted, and the site's server can't read them",
+          "Each user connects their own model: Ollama on their PC or an OpenRouter key"
+        ],
+        "alt": "A character with long brown hair standing in Emberia's park: blossoming cherry trees, a red torii gate, deer and a snowy mountain",
+        "links": [
+          { "label": "Emberia website (Hebrew)", "url": "https://emberia.pages.dev/", "hreflang": "he" }
+        ]
+      }
     }
   ],
 
@@ -195,7 +237,7 @@
       "categories_nav": "קטגוריות",
       "lang_switch": "English",
       "lang_short": "EN",
-      "og_alt": "הפרויקטים של ים: הנחתי, Steam Switcher ותרגומי משחקים לעברית",
+      "og_alt": "הפרויקטים של ים: הנחתי, Steam Switcher, Emberia ותרגומי משחקים לעברית",
       "cta": "לפרויקטים",
       "stat_projects": "פרויקטים",
       "stat_released": "שוחררו לציבור",
@@ -224,7 +266,7 @@
       "categories_nav": "Categories",
       "lang_switch": "עברית",
       "lang_short": "עב",
-      "og_alt": "Yam's Projects: Hinachti, Steam Switcher and Hebrew game translations",
+      "og_alt": "Yam's Projects: Hinachti, Steam Switcher, Emberia and Hebrew game translations",
       "cta": "See the projects",
       "stat_projects": "Projects",
       "stat_released": "Released",

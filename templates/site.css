@@ -894,6 +894,8 @@ h1 {
 .showcase--both .sc-window { inset-inline-end: 1%; top: 10%; width: 76%; rotate: calc(-2deg * var(--flip)); }
 .showcase--both .sc-phone { inset-inline-start: 3%; top: 17%; width: 31%; z-index: 2; rotate: calc(5deg * var(--flip)); }
 .showcase--window .sc-window { inset-inline-end: 8%; top: 8%; width: 84%; }
+.sc-web { inset-inline-end: 4%; bottom: 13%; width: 42%; z-index: 2; rotate: calc(3deg * var(--flip)); }
+.sc-web img { display: block; width: 100%; height: auto; }
 .showcase--phone .sc-phone { inset-inline-end: 34%; top: 4%; width: 34%; }
 
 .sc-tag {
@@ -934,6 +936,8 @@ h1 {
 .sc-tag--window { inset-inline-end: 4%; top: 1%; }
 .sc-tag--phone { inset-inline-start: 0; bottom: 3%; }
 .sc-tag--extra { inset-inline-end: 8%; bottom: 2%; }
+.showcase--web .sc-tag--extra { inset-inline: 0 auto; bottom: auto; top: 3%; }
+.sc-tag--web { inset-inline-end: 10%; bottom: 6%; }
 @media (max-width: 599px) {
   .sc-tag--extra { display: none; }
 }
@@ -944,7 +948,8 @@ h1 {
 /* Phones: only the phone, smaller, beside its tags, so the first card comes sooner. */
 @media (max-width: 430px) {
   .showcase { aspect-ratio: auto; height: clamp(190px, 58vw, 236px); max-width: none; }
-  .showcase--both .sc-window { display: none; }
+  .showcase--both .sc-window,
+  .sc-web { display: none; }
   .showcase .sc-phone { inset-inline: auto 8%; top: 0; width: 34%; rotate: calc(4deg * var(--flip)); }
   .sc-halo { inset: 0 0 0 auto; inset-inline-start: 30%; }
   .showcase .sc-tag { padding: 6px; padding-inline-end: 12px; gap: 8px; }
@@ -953,6 +958,9 @@ h1 {
   .showcase .sc-tag small { font-size: .75rem; }
   .showcase .sc-tag--phone { inset-inline-start: 0; top: 22%; bottom: auto; }
   .showcase .sc-tag--window { inset-inline: 0 auto; top: 50%; }
+  .showcase--web .sc-tag--phone { top: 6%; }
+  .showcase--web .sc-tag--window { top: 36%; }
+  .showcase .sc-tag--web { inset-inline: 0 auto; top: 66%; bottom: auto; }
 }
 
 /* ------------------------------------------------------------ device frames */
@@ -2019,6 +2027,7 @@ h1::before {
 
   .sc-window { animation: float 9s ease-in-out infinite; }
   .sc-phone { animation: float 7.5s ease-in-out -2s infinite; }
+  .sc-web { animation: float 8.5s ease-in-out -5s infinite; }
 
   /* rim light, the stars, the headline shine, the screen glare in the hero */
   .rim-light { opacity: 1; animation: rim-ltr 16s ease-in-out infinite alternate; }
@@ -2038,6 +2047,7 @@ h1::before {
   .glare::before { opacity: 1; translate: 0 0; }
   .showcase .glare::before { animation: glare-ltr 11s ease-in-out 3s 4 both; }
   .showcase .sc-phone .glare::before { animation-delay: 6.5s; }
+  .showcase .sc-web .glare::before { animation-delay: 9s; }
   [dir="rtl"] .showcase .glare::before { animation-name: glare-rtl; }
 
   /* the card border light: only while that card is on screen and the tab is visible */
@@ -2069,7 +2079,8 @@ h1::before {
   .still .btn--glow::after,
   .still .eyebrow-dot::after,
   .still .sc-window,
-  .still .sc-phone { animation-play-state: paused; }
+  .still .sc-phone,
+  .still .sc-web { animation-play-state: paused; }
 
   /* first paint: the hero assembles itself (only when scripts run) */
   .js .hero-copy > *,
