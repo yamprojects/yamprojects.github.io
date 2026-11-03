@@ -9,8 +9,34 @@
     "ads": { "client": "", "slots": { "between": "", "footer": "" } },
     "search_console": "google1b9506e1c8f7c022",
     "analytics": { "goatcounter": "" },
+    "about": {
+      "title": "קצת עליי",
+      "body": "אני ים, בן 26 מישראל, סטודנט שנה ב' לשיווק טכנולוגי. מאז שה-AI יצא לעולם אני בונה איתו פרויקטים מורכבים, מהרעיון ועד מוצר שאנשים משתמשים בו: אפליקציות לאנדרואיד ולווינדוס, אתרים ותרגומים מלאים של משחקי מחשב לעברית. את הקוד אני בונה יחד עם AI (Vibe Coding), ומהלימודים אני מביא את החשיבה השיווקית: לכל פרויקט יש קהל, מטרה ואתר משלו. אני ממשיך ללמוד ולהתפתח, וכל פרויקט חדש מציב רף גבוה יותר.",
+      "points_title": "מה מייחד את הפרויקטים",
+      "points": [
+        { "icon": "hebrew", "title": "עברית קודם כול", "text": "הכול בנוי מימין לשמאל, בעברית ובאנגלית, ומשחקים מקבלים תרגום מלא בתוך המשחק עצמו." },
+        { "icon": "privacy", "title": "פרטיות", "text": "הנחתי עובדת בלי אינטרנט ולא שולחת מידע, ו-Steam Switcher לא שומרת סיסמאות." },
+        { "icon": "product", "title": "מוצר שלם", "text": "לכל פרויקט אתר משלו, הורדה ועדכונים, לא רק קוד." },
+        { "icon": "ai", "title": "AI ושיווק ביחד", "text": "בנייה מהירה עם AI, ותכנון שמתחיל מהשאלה למי המוצר ולמה." }
+      ],
+      "job_title": "סטודנט לשיווק טכנולוגי",
+      "country": "ישראל"
+    },
     "en": {
       "name": "Yam",
+      "about": {
+        "title": "About me",
+        "body": "I'm Yam, 26, from Israel, a second-year technology marketing student. Since AI arrived, I've been using it to build complex projects from idea to a product people actually use: Android and Windows apps, websites, and full Hebrew translations of PC games. I build the code together with AI (vibe coding), and from my studies I bring the marketing mindset: every project has an audience, a goal and a website of its own. I keep learning and growing, and every new project raises the bar.",
+        "points_title": "What makes the projects different",
+        "points": [
+          { "icon": "hebrew", "title": "Hebrew first", "text": "Everything is built right-to-left, in Hebrew and English, and games get a full translation inside the game itself." },
+          { "icon": "privacy", "title": "Privacy", "text": "Hinachti works offline and sends no data, and Steam Switcher never stores passwords." },
+          { "icon": "product", "title": "A complete product", "text": "Every project has its own website, downloads and updates, not just code." },
+          { "icon": "ai", "title": "AI and marketing together", "text": "Fast building with AI, and planning that starts from who the product is for and why." }
+        ],
+        "job_title": "Technology marketing student",
+        "country": "Israel"
+      },
       "eyebrow": "My work",
       "title": "Yam's Projects",
       "lead": "An Android app, a Windows app, a website for chatting with a 3D character and Hebrew game translations. Each project has a website of its own."
@@ -251,6 +277,7 @@
       "footer": "© 2026 ים. כל הזכויות שמורות.",
       "updated": "עודכן ב-",
       "back_to_top": "חזרה למעלה",
+      "about_nav": "עליי",
       "flag_il": "תרגום ישראלי",
       "ad": "פרסומת",
       "footer_ads": "© 2026 ים. כל הזכויות שמורות. האתר מציג פרסומות של Google.",
@@ -280,6 +307,7 @@
       "footer": "© 2026 Yam. All rights reserved.",
       "updated": "Updated ",
       "back_to_top": "Back to top",
+      "about_nav": "About",
       "flag_il": "Israeli translation",
       "ad": "Advertisement",
       "footer_ads": "© 2026 Yam. All rights reserved. This site shows Google ads.",

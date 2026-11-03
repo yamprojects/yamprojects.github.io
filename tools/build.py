@@ -970,7 +970,8 @@ def render_page(data, lang, base, today):
         stats=stats,
         index="".join(index),
         index_class=" index--two" if len(index) > 6 else "",
-        nav="".join(nav),
+        nav="".join(nav) + (f'<a href="#about">{esc(ui["about_nav"])}</a>' if owner.get("about") else ""),
+        about=render_about(owner, lang),
         sections="".join(sections),
         switch_href=switch_href,
         switch_lang=other,
@@ -1003,6 +1004,43 @@ def render_page(data, lang, base, today):
     out.write_text(page, encoding="utf-8")
 
 
+ABOUT_ICONS = {
+    # simple line icons for the About points (24 x 24, drawn in currentColor)
+    "hebrew": '<path d="M4 5h16v10H9l-5 4z"/><path d="M15 9H9m3 3H9"/>',
+    "privacy": '<path d="M12 3l7 3v5c0 4.4-3 8.2-7 9.5C8 19.2 5 15.4 5 11V6z"/><path d="M9 11.5l2 2 4-4"/>',
+    "product": '<path d="M12 3l8 4.5v9L12 21l-8-4.5v-9z"/><path d="M4 7.5l8 4.5 8-4.5M12 12v9"/>',
+    "ai": '<path d="M12 3l1.8 4.7L18.5 9.5l-4.7 1.8L12 16l-1.8-4.7L5.5 9.5l4.7-1.8z"/><path d="M18 15l.9 2.1L21 18l-2.1.9L18 21l-.9-2.1L15 18l2.1-.9z"/>',
+}
+
+
+def render_about(owner, lang):
+    """The About section after the projects: who makes them, and what they have in common."""
+    about = owner.get("about")
+    if not about:
+        return ""
+    points = "".join(
+        f'<li style="--i: {i}"><span class="about-icon" aria-hidden="true">'
+        f'<svg viewBox="0 0 24 24" width="22" height="22" focusable="false"><g fill="none" stroke="currentColor" '
+        f'stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">{ABOUT_ICONS.get(pt.get("icon"), "")}</g></svg></span>'
+        f'<h4>{prose(pt["title"], lang)}</h4><p>{prose(pt["text"], lang)}</p></li>'
+        for i, pt in enumerate(about.get("points", [])))
+    points = (f'<h3 class="about-points-title">{esc(about["points_title"])}</h3>'
+              f'<ul class="about-points">{points}</ul>' if points else "")
+    return f"""
+    <section class="about" id="about" aria-labelledby="about-title">
+      <div class="about-panel">
+        <div class="about-intro">
+          <div class="about-head">
+            <span class="about-mark" aria-hidden="true">ים</span>
+            <h2 id="about-title">{esc(about["title"])}</h2>
+          </div>
+          <p class="about-body">{prose(about["body"], lang)}</p>
+        </div>
+        {points}
+      </div>
+    </section>"""
+
+
 def json_ld(data, lang, base, url, owner, projects):
     """Structured data for search engines: the site, its author and the projects (no ratings,
     nothing that is not on the page). Only with site_url, since it needs absolute URLs."""
@@ -1010,6 +1048,14 @@ def json_ld(data, lang, base, url, owner, projects):
         return ""
     person = {"@type": "Person", "@id": f"{base}#person", "name": owner["name"], "url": base,
               "sameAs": []}
+    about = owner.get("about") or {}
+    if about.get("body"):
+        person["description"] = about["body"]
+    if about.get("job_title"):
+        person["jobTitle"] = about["job_title"]
+    if about.get("country"):
+        person["nationality"] = {"@type": "Country", "name": about["country"]}
+        person["homeLocation"] = {"@type": "Country", "name": about["country"]}
     items = []
     for p in projects:
         schema = p.get("schema")

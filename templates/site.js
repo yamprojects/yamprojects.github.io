@@ -268,5 +268,5 @@
       }
     }
   }, { rootMargin: '-35% 0px -60% 0px' });
-  document.querySelectorAll('.category').forEach((s) => spy.observe(s));
+  document.querySelectorAll('.category, .about').forEach((s) => spy.observe(s));
 })();
