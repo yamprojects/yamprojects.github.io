@@ -970,7 +970,7 @@ def render_page(data, lang, base, today):
         stats=stats,
         index="".join(index),
         index_class=" index--two" if len(index) > 6 else "",
-        nav="".join(nav) + (f'<a href="#about">{esc(ui["about_nav"])}</a>' if owner.get("about") else ""),
+        nav=(f'<a href="#about">{esc(ui["about_nav"])}</a>' if owner.get("about") else "") + "".join(nav),
         about=render_about(owner, lang),
         sections="".join(sections),
         switch_href=switch_href,
